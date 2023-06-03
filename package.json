@@ -6,7 +6,6 @@
     "name": "Tier",
     "url": "https://tier.run"
   },
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "turbo": "next dev --turbo",
