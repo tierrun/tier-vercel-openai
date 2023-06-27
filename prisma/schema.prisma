@@ -74,7 +74,7 @@ model VerificationToken {
 model Content {
   id               String   @id @default(cuid())
   prompt           String
-  generatedContent String   @db.Text
+  generatedContent String?  @db.Text
   generatedAt      DateTime @default(now()) @map(name: "generated_at")
   userId           String
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
