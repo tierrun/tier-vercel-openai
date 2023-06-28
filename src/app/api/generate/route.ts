@@ -1,3 +1,4 @@
+import { NextFetchEvent } from "next/server";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { FeatureName } from "tier";
 import { z } from "zod";
@@ -17,8 +18,8 @@ const inputSchema = z.object({
   userId: z.string(),
 });
 
-const generateCopyStream = async (input: string) => {
-  const prompt = `You are a marketing expert and a customer approaches you to write a very short and very interesting marketing copy for him or her. They want a marketing copy on the topic of \"${input}\".\n\nThis is the short marketing copy you came up with:\n\n`;
+const generateCopyStream = async (input: string, context: NextFetchEvent) => {
+  const prompt = `You are a marketing expert and a customer approaches you to write a very short and crisp marketing copy for him or her. They want a marketing copy on the topic of \"${input}\".\n\nThis is the short marketing copy you came up with:\n\n`;
 
   const response = await openAI.createCompletion({
     model: "text-davinci-003",
@@ -32,14 +33,12 @@ const generateCopyStream = async (input: string) => {
     n: 1,
   });
 
-  const stream = await OpenAIStream(response, {
-    onStart: async () => {},
-  });
+  const stream = await OpenAIStream(response);
 
   return stream;
 };
 
-export async function POST(req: Request) {
+export async function POST(req: Request, context: NextFetchEvent) {
   try {
     const json = await req.json();
     const body = inputSchema.parse(json);
@@ -50,7 +49,7 @@ export async function POST(req: Request) {
     );
 
     if (tierAnswer.ok) {
-      const stream = await generateCopyStream(body.prompt);
+      const stream = await generateCopyStream(body.prompt, context);
 
       await tierAnswer.report();
 
@@ -62,7 +61,7 @@ export async function POST(req: Request) {
       );
 
       if (tierExtraCopyAnswer.ok) {
-        const stream = await generateCopyStream(body.prompt);
+        const stream = await generateCopyStream(body.prompt, context);
 
         await tierAnswer.report();
 

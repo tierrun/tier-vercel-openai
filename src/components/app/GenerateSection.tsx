@@ -9,16 +9,44 @@ export function Generate({ user }) {
   const [error, setError] = useState(false);
   const [usedQuota, setUsedQuota] = useState(user?.limit?.used);
 
-  const { completion, input, isLoading, handleInputChange, handleSubmit } =
-    useCompletion({
-      api: "/api/generate",
-      body: {
-        userId: user.id,
-      },
-      onFinish: () => {
-        setUsedQuota(usedQuota + 1);
-      },
-    });
+  const {
+    completion,
+    setCompletion,
+    input,
+    setInput,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+  } = useCompletion({
+    api: "/api/generate",
+    body: {
+      userId: user.id,
+    },
+    onFinish: async (prompt, completion) => {
+      setUsedQuota(usedQuota + 1);
+      try {
+        console.log(completion);
+        const res = await fetch("/api/save-completion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ completion, input: prompt }),
+        });
+
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+
+  function clearGeneration() {
+    setInput("");
+    setCompletion("");
+  }
 
   useEffect(() => {
     if (input.length <= 100) setError(false);
@@ -79,15 +107,32 @@ export function Generate({ user }) {
               </p>
             )}
           </div>
-          <Button
-            variant="primary"
-            type="submit"
-            className="disabled:bg-slate-3 disabled:text-slate-11"
-            disabled={isLoading}
-            // disabled={usedQuota < user?.limit.limit ? false : true}
-          >
-            {isLoading ? "Generating your copy..." : "Generate marketing copy"}
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Button
+              variant="primary"
+              type="submit"
+              className="disabled:bg-slate-3 disabled:text-slate-11"
+              disabled={isLoading}
+              // disabled={usedQuota < user?.limit.limit ? false : true}
+            >
+              {isLoading
+                ? "Generating your copy..."
+                : "Generate marketing copy"}
+            </Button>
+            {input && completion ? (
+              <Button
+                variant="secondary"
+                onClick={clearGeneration}
+                className="disabled:bg-slate-3 disabled:text-slate-11"
+                disabled={isLoading}
+                // disabled={usedQuota < user?.limit.limit ? false : true}
+              >
+                Clear generation
+              </Button>
+            ) : (
+              <></>
+            )}
+          </div>
         </form>
         {/* Output field for marketing copy */}
         <div className="h-64 w-full rounded-[4px] border border-slate-6 bg-slate-2 p-10 xl:h-[384px] xl:w-[640px]">
