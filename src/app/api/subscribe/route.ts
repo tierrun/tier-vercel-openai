@@ -21,13 +21,14 @@ export async function GET(req: Request) {
 
     const paymentMethod = await tier.lookupPaymentMethods(`org:${user?.id}`);
 
+    const appProtocolScheme =
+      env.NODE_ENV === "development" ? "http://" : "https://";
+    const appURL = `${appProtocolScheme}${env.NEXT_PUBLIC_VERCEL_URL}`;
+
     if (paymentMethod.methods[0] === undefined) {
       console.log("checkout");
-      const successUrl = new URL(
-        "/generate",
-        env.NEXT_PUBLIC_APP_URL
-      ).toString();
-      const cancelUrl = new URL("/billing", env.NEXT_PUBLIC_APP_URL).toString();
+      const successUrl = new URL("/generate", appURL).toString();
+      const cancelUrl = new URL("/billing", appURL).toString();
 
       await tier.updateOrg(`org:${user?.id}`, {
         email: user?.email as string,
@@ -53,7 +54,9 @@ export async function GET(req: Request) {
         console.log(error);
       }
       return new Response(
-        JSON.stringify({ url: new URL("/generate", env.NEXT_PUBLIC_APP_URL) })
+        JSON.stringify({
+          url: new URL("/generate", appURL),
+        })
       );
     }
   } catch (error) {

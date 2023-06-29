@@ -1,12 +1,16 @@
 import { SiteConfig } from "@/types";
 import { env } from "@/env.mjs";
 
+const appProtocolScheme =
+  env.NODE_ENV === "development" ? "http://" : "https://";
+const appURL = `${appProtocolScheme}${env.NEXT_PUBLIC_VERCEL_URL}`;
+
 export const siteConfig: SiteConfig = {
   name: "Blip",
   description:
     "An AI marketing content generation tool, made with Tier, NextJS 13, OpenAI and Vercel Postgres.",
-  url: env.NEXT_PUBLIC_APP_URL,
-  ogImage: `${env.NEXT_PUBLIC_APP_URL}/og.jpg`,
+  url: appURL,
+  ogImage: `${appURL}/og.jpg`,
   links: {
     twitter: "https://twitter.com/tierrun",
     github: "https://github.com/tierrun/blip",
