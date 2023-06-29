@@ -24,6 +24,7 @@
     "@radix-ui/react-toast": "^1.1.4",
     "@t3-oss/env-nextjs": "^0.6.0",
     "@vercel/postgres": "^0.4.0",
+    "ai": "^2.1.10",
     "clsx": "^1.2.1",
     "cva": "npm:class-variance-authority@^0.6.1",
     "lucide-react": "^0.256.0",
@@ -53,6 +54,7 @@
     "@typescript-eslint/parser": "^5.60.1",
     "autoprefixer": "^10.4.14",
     "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.43.0",
     "eslint-config-next": "^13.4.7",
     "eslint-config-prettier": "^8.8.0",
@@ -68,5 +70,10 @@
     "tailwindcss": "^3.3.2",
     "tailwindcss-animate": "^1.0.6",
     "typescript": "^5.1.6"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
