@@ -7,11 +7,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "turbo": "next dev --turbo",
-    "build": "next build",
+    "build": "prisma db push && next build",
     "start": "next start",
     "lint": "next lint",
-    "preview": "next build && next start",
     "postinstall": "prisma generate",
     "commit": "cz",
     "knip": "knip"
