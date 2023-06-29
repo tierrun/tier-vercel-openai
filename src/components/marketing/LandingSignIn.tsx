@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/Button";
 
-export function SignUpForm() {
+export function SignInForm() {
   async function handleGithub() {
     signIn("github", { callbackUrl: "/generate" });
   }
@@ -13,12 +13,12 @@ export function SignUpForm() {
     <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
       <Button
         type="button"
-        variant="primary"
+        variant="text"
         onClick={() => {
           handleGithub();
         }}
       >
-        Sign up with Github
+        Login
       </Button>
     </div>
   );

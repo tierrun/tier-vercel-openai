@@ -8,6 +8,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
 import { Button } from "@/components/ui/Button";
+import { SignInForm } from "@/components/marketing/LandingSignIn";
 import { BlipLogo } from "@/res/logos/BlipLogo";
 
 const navigation = [
@@ -60,12 +61,7 @@ export function Header() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-5">
-          <Button variant="text" href="/login">
-            Login
-          </Button>
-          <Button variant="primary" href="/signup">
-            Get Started - Its Free
-          </Button>
+          <SignInForm />
         </div>
       </nav>
       <Dialog
