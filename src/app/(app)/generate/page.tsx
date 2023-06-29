@@ -15,7 +15,8 @@ export default async function GeneratePage() {
   const user = await getCurrentUser();
   return (
     <>
-      {/* <Skeleton className="h-5 w-1/2" /> */}
+      {process.env.NEXTAUTH_URL}
+      {process.env.NEXT_PUBLIC_VERCEL_URL}
       <Generate user={user} />
     </>
   );
