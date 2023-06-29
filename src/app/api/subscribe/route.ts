@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth/next";
 import type { PlanName } from "tier";
+import { z } from "zod";
 
 import { env } from "@/env.mjs";
 import { authOptions } from "@/lib/auth";
