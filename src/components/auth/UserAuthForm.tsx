@@ -28,7 +28,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isGithubLoading, setIsGithubLoading] = useState<boolean>(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   const searchParams = useSearchParams();
 
   async function onSubmit(data: FormData) {
@@ -62,11 +61,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     signIn("github", { callbackUrl: "/generate" });
   }
 
-  // Signin using Google
-  async function handleGoogle() {
-    signIn("google", { callbackUrl: "/generate" });
-  }
-
   return (
     <div className={cn(className)} {...props}>
       <form
@@ -87,7 +81,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 autoCapitalize="none"
                 autoComplete="email"
                 autoCorrect="off"
-                disabled={isLoading || isGithubLoading || isGoogleLoading}
+                disabled={isLoading || isGithubLoading}
                 required
                 {...register("email")}
                 className="block w-full rounded-[4px] border border-slate-6 bg-slate-2 py-1.5 text-slate-11 focus:ring-2 focus:ring-inset focus:ring-crimson-6
@@ -129,7 +123,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           type="button"
           onClick={handleGithub}
           className="flex w-full items-center md:w-[473px]"
-          disabled={isLoading || isGithubLoading || isGoogleLoading}
+          disabled={isLoading || isGithubLoading}
         >
           {isGithubLoading ? (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
@@ -137,20 +131,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <Icons.gitHub className="mr-2 h-4 w-4" />
           )}{" "}
           Github
-        </Button>
-        <Button
-          variant="outline"
-          type="button"
-          onClick={handleGoogle}
-          className="w-full md:w-[473px]"
-          disabled={isLoading || isGithubLoading || isGoogleLoading}
-        >
-          {isGoogleLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Icons.google className="h-6 w-6" />
-          )}{" "}
-          Google
         </Button>
       </div>
     </div>

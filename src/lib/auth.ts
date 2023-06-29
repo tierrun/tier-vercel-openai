@@ -3,21 +3,14 @@ import { NextAuthOptions } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import { Client } from "postmark";
-import {
-  FeatureName,
-  FeatureNameVersioned,
-  OrgInfo,
-  PlanName,
-  Usage,
-} from "tier";
+import { OrgInfo } from "tier";
 
 import { env } from "@/env.mjs";
 import { siteConfig } from "@/config/site";
+import { tierConstants } from "@/config/tierConstants";
 import { db } from "@/lib/db";
+import { postmarkClient } from "@/lib/email";
 import { tier } from "@/lib/tier";
-
-const postmarkClient = new Client(env.POSTMARK_API_TOKEN);
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db as any),
@@ -31,10 +24,6 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
-    }),
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     EmailProvider({
       from: env.SMTP_FROM,
@@ -92,14 +81,14 @@ export const authOptions: NextAuthOptions = {
         try {
           const limits = await tier.lookupLimit(
             `org:${session?.user?.id}`,
-            env.TIER_AICOPY_FEATURE_ID as FeatureName
+            tierConstants.TIER_AICOPY_FEATURE_ID
           );
           console.log(limits);
           session.user.limit = limits;
         } catch (error) {
           await tier.subscribe(
             `org:${session?.user?.id}`,
-            env.TIER_FREE_PLAN_ID as PlanName,
+            tierConstants.TIER_FREE_PLAN_ID,
             {
               info: {
                 name: session?.user?.name as string,
@@ -110,12 +99,12 @@ export const authOptions: NextAuthOptions = {
           try {
             const limits = await tier.lookupLimit(
               `org:${session?.user?.id}`,
-              env.TIER_AICOPY_FEATURE_ID as FeatureName
+              tierConstants.TIER_AICOPY_FEATURE_ID
             );
             session.user.limit = limits;
           } catch (error) {
             session.user.limit = {
-              feature: env.TIER_AICOPY_FEATURE_ID as FeatureName,
+              feature: tierConstants.TIER_AICOPY_FEATURE_ID,
               used: 0,
               limit: 1,
             };

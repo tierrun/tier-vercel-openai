@@ -1,9 +1,9 @@
 import { NextFetchEvent } from "next/server";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import { FeatureName } from "tier";
 import { z } from "zod";
 
 import { env } from "@/env.mjs";
+import { tierConstants } from "@/config/tierConstants";
 import { openAI } from "@/lib/ai";
 import { tier } from "@/lib/tier";
 
@@ -45,7 +45,7 @@ export async function POST(req: Request, context: NextFetchEvent) {
 
     const tierAnswer = await tier.can(
       `org:${body.userId}`,
-      env.TIER_AICOPY_FEATURE_ID as FeatureName
+      tierConstants.TIER_AICOPY_FEATURE_ID
     );
 
     if (tierAnswer.ok) {
@@ -57,7 +57,7 @@ export async function POST(req: Request, context: NextFetchEvent) {
     } else {
       const tierExtraCopyAnswer = await tier.can(
         `org:${body.userId}`,
-        env.TIER_EXTRACOPY_FEATURE_ID as FeatureName
+        tierConstants.TIER_EXTRACOPY_FEATURE_ID
       );
 
       if (tierExtraCopyAnswer.ok) {

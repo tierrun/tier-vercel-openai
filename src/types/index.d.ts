@@ -1,4 +1,5 @@
 import { User } from "@prisma/client";
+import type { FeatureName, Model, Plan, PlanName } from "tier";
 
 export type NavItem = {
   title: string;
@@ -22,6 +23,15 @@ export type SiteConfig = {
     twitter: string;
     github: string;
   };
+};
+
+export type TierConstants = {
+  TIER_FREE_PLAN_ID: PlanName;
+  TIER_STARTUP_PLAN_ID: PlanName;
+  TIER_BUSINESS_PLAN_ID: PlanName;
+  TIER_BASE_FEATURE_ID: FeatureName;
+  TIER_AICOPY_FEATURE_ID: FeatureName;
+  TIER_EXTRACOPY_FEATURE_ID: FeatureName;
 };
 
 export type SubscriptionPlan = {
