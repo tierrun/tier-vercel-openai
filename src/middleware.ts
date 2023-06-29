@@ -6,11 +6,9 @@ export default withAuth(
   async function middleware(req) {
     const token = await getToken({ req });
     const isAuth = !!token;
-    const isAuthPage =
-      req.nextUrl.pathname.startsWith("/login") ||
-      req.nextUrl.pathname.startsWith("/signup");
+    const isHomePage = req.nextUrl.pathname === "/";
 
-    if (isAuthPage) {
+    if (isHomePage) {
       if (isAuth) {
         return NextResponse.redirect(new URL("/generate", req.url));
       }
@@ -25,7 +23,7 @@ export default withAuth(
       }
 
       return NextResponse.redirect(
-        new URL(`/login?from=${encodeURIComponent(from)}`, req.url)
+        new URL(`/?from=${encodeURIComponent(from)}`, req.url)
       );
     }
   },
@@ -42,12 +40,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: [
-    "/generate",
-    "/history",
-    "/billing",
-    "/login",
-    "/signup",
-    "/api/generate",
-  ],
+  matcher: ["/", "/generate", "/history", "/billing", "/api/generate"],
 };
