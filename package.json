@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "next lint",
     "preview": "next build && next start",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "commit": "cz"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",
@@ -23,7 +24,6 @@
     "@radix-ui/react-toast": "^1.1.4",
     "@t3-oss/env-nextjs": "^0.6.0",
     "@vercel/postgres": "^0.4.0",
-    "ai": "^2.1.10",
     "clsx": "^1.2.1",
     "cva": "npm:class-variance-authority@^0.6.1",
     "lucide-react": "^0.256.0",
@@ -40,6 +40,9 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.6.6",
+    "@commitlint/config-conventional": "^17.6.6",
+    "@commitlint/cz-commitlint": "^17.5.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.4",
@@ -49,11 +52,14 @@
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/parser": "^5.60.1",
     "autoprefixer": "^10.4.14",
+    "commitizen": "^4.3.0",
     "eslint": "^8.43.0",
     "eslint-config-next": "^13.4.7",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-tailwindcss": "^3.13.0",
+    "husky": "^8.0.3",
+    "inquirer": "^8.2.5",
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",

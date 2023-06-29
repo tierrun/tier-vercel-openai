@@ -16,6 +16,11 @@ export default async function GeneratePage() {
   return (
     <>
       {process.env.NEXTAUTH_URL}
+      <br />
+      <br />
+      {process.env.VERCEL_URL}
+      <br />
+      <br />
       {process.env.NEXT_PUBLIC_VERCEL_URL}
       <Generate user={user} />
     </>
