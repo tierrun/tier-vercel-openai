@@ -1,19 +1,6 @@
 import { User } from "@prisma/client";
 import type { FeatureName, Model, Plan, PlanName } from "tier";
 
-export type NavItem = {
-  title: string;
-  href: string;
-};
-
-export type MarketingConfig = {
-  mainNav: NavItem[];
-};
-
-export type AppConfig = {
-  mainNav: NavItem[];
-};
-
 export type SiteConfig = {
   name: string;
   description: string;
