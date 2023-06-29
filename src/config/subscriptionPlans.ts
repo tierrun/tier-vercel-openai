@@ -1,7 +1,6 @@
-import type { FeatureName, Model, Plan, PlanName } from "tier";
+import type { Model, Plan, PlanName } from "tier";
 
 import { TierPlan } from "@/types";
-import { env } from "@/env.mjs";
 import { tierConstants } from "@/config/tierConstants";
 import { tier } from "@/lib/tier";
 

@@ -1,7 +1,5 @@
-import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import type { PlanName } from "tier";
-import { z } from "zod";
 
 import { env } from "@/env.mjs";
 import { authOptions } from "@/lib/auth";
@@ -21,14 +19,13 @@ export async function GET(req: Request) {
 
     const paymentMethod = await tier.lookupPaymentMethods(`org:${user?.id}`);
 
-    const appProtocolScheme =
-      env.NODE_ENV === "development" ? "http://" : "https://";
-    const appURL = `${appProtocolScheme}${env.NEXT_PUBLIC_VERCEL_URL}`;
-
     if (paymentMethod.methods[0] === undefined) {
       console.log("checkout");
-      const successUrl = new URL("/generate", appURL).toString();
-      const cancelUrl = new URL("/billing", appURL).toString();
+      const successUrl = new URL(
+        "/generate",
+        env.NEXT_PUBLIC_APP_URL
+      ).toString();
+      const cancelUrl = new URL("/billing", env.NEXT_PUBLIC_APP_URL).toString();
 
       await tier.updateOrg(`org:${user?.id}`, {
         email: user?.email as string,
@@ -55,7 +52,7 @@ export async function GET(req: Request) {
       }
       return new Response(
         JSON.stringify({
-          url: new URL("/generate", appURL),
+          url: new URL("/generate", env.NEXT_PUBLIC_APP_URL),
         })
       );
     }
