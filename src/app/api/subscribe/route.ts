@@ -23,11 +23,8 @@ export async function GET(req: Request) {
 
     if (paymentMethod.methods[0] === undefined) {
       console.log("checkout");
-      const successUrl = new URL(
-        "/generate",
-        env.NEXT_PUBLIC_APP_URL
-      ).toString();
-      const cancelUrl = new URL("/billing", env.NEXT_PUBLIC_APP_URL).toString();
+      const successUrl = new URL("/generate", env.NEXTAUTH_URL).toString();
+      const cancelUrl = new URL("/billing", env.NEXTAUTH_URL).toString();
 
       await tier.updateOrg(`org:${user?.id}`, {
         email: user?.email as string,
@@ -53,7 +50,7 @@ export async function GET(req: Request) {
         console.log(error);
       }
       return new Response(
-        JSON.stringify({ url: new URL("/generate", env.NEXT_PUBLIC_APP_URL) })
+        JSON.stringify({ url: new URL("/generate", env.NEXTAUTH_URL) })
       );
     }
   } catch (error) {

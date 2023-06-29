@@ -15,7 +15,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <div className="px-6 lg:px-8">{children}</div>
       </main>
 
-      <Footer />
+      <div className="pt-28">
+        <Footer />
+      </div>
     </>
   );
 }

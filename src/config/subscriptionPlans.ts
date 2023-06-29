@@ -2,21 +2,21 @@ import type { FeatureName, Model, Plan, PlanName } from "tier";
 
 import { TierPlan } from "@/types";
 import { env } from "@/env.mjs";
+import { tierConstants } from "@/config/tierConstants";
 import { tier } from "@/lib/tier";
 
 const data: Model = await tier.pull();
 
-const freePlanTier = data.plans[env.TIER_FREE_PLAN_ID as PlanName];
-const startupPlanTier = data.plans[env.TIER_STARTUP_PLAN_ID as PlanName];
-const businessPlanTier = data.plans[env.TIER_BUSINESS_PLAN_ID as PlanName];
+const freePlanTier = data.plans[tierConstants.TIER_FREE_PLAN_ID];
+const startupPlanTier = data.plans[tierConstants.TIER_STARTUP_PLAN_ID];
+const businessPlanTier = data.plans[tierConstants.TIER_BUSINESS_PLAN_ID];
 
 const getBase = (plan: Plan): number => {
   var result = 0;
   if (plan.features !== undefined) {
     result =
-      plan.features[env.TIER_BASE_FEATURE_ID as FeatureName]?.base !== undefined
-        ? (plan.features[env.TIER_BASE_FEATURE_ID as FeatureName]
-            ?.base as number)
+      plan.features[tierConstants.TIER_BASE_FEATURE_ID]?.base !== undefined
+        ? (plan.features[tierConstants.TIER_BASE_FEATURE_ID]?.base as number)
         : 0;
   }
   return result;
@@ -25,15 +25,13 @@ const getBase = (plan: Plan): number => {
 const getFeatures = (plan: Plan): string[] => {
   var result = [];
   if (plan.features !== undefined) {
-    const basicFeature =
-      plan.features[env.TIER_AICOPY_FEATURE_ID as FeatureName];
+    const basicFeature = plan.features[tierConstants.TIER_AICOPY_FEATURE_ID];
     if (basicFeature.tiers !== undefined) {
       const number = basicFeature.tiers[0].upto;
       result[0] = `${number} AI generated copy`;
     }
 
-    const extraFeature =
-      plan.features[env.TIER_EXTRACOPY_FEATURE_ID as FeatureName];
+    const extraFeature = plan.features[tierConstants.TIER_EXTRACOPY_FEATURE_ID];
     if (extraFeature !== undefined) {
       if (extraFeature.tiers !== undefined) {
         const price =
@@ -50,8 +48,7 @@ const getFeatures = (plan: Plan): string[] => {
 export function getExtraUsageRate(plan: Plan): number | null {
   var price = null;
   if (plan.features !== undefined) {
-    const extraFeature =
-      plan.features[env.TIER_EXTRACOPY_FEATURE_ID as FeatureName];
+    const extraFeature = plan.features[tierConstants.TIER_EXTRACOPY_FEATURE_ID];
     if (extraFeature !== undefined) {
       if (extraFeature.tiers !== undefined) {
         price =
@@ -65,7 +62,7 @@ export function getExtraUsageRate(plan: Plan): number | null {
 }
 
 export function getPlan(planId: PlanName) {
-  if (planId === (env.TIER_FREE_PLAN_ID as PlanName)) {
+  if (planId === tierConstants.TIER_FREE_PLAN_ID) {
     return {
       planId,
       currency: (freePlanTier.currency as string) || "usd",
@@ -74,7 +71,7 @@ export function getPlan(planId: PlanName) {
       base: getBase(freePlanTier),
       extraUsageRate: getExtraUsageRate(freePlanTier),
     };
-  } else if (planId === (env.TIER_STARTUP_PLAN_ID as PlanName)) {
+  } else if (planId === tierConstants.TIER_STARTUP_PLAN_ID) {
     return {
       planId,
       currency: (startupPlanTier.currency as string) || "usd",
@@ -83,7 +80,7 @@ export function getPlan(planId: PlanName) {
       base: getBase(startupPlanTier),
       extraUsageRate: getExtraUsageRate(startupPlanTier),
     };
-  } else if (planId === (env.TIER_BUSINESS_PLAN_ID as PlanName)) {
+  } else if (planId === tierConstants.TIER_BUSINESS_PLAN_ID) {
     return {
       planId,
       currency: (businessPlanTier.currency as string) || "usd",
@@ -96,7 +93,7 @@ export function getPlan(planId: PlanName) {
 }
 
 export const freePlan: TierPlan = {
-  planId: env.TIER_FREE_PLAN_ID as PlanName,
+  planId: tierConstants.TIER_FREE_PLAN_ID,
   currency: (freePlanTier.currency as string) || "usd",
   interval: (freePlanTier.interval as string) || "monthly",
   promoted: false,
@@ -106,7 +103,7 @@ export const freePlan: TierPlan = {
 };
 
 export const startupPlan: TierPlan = {
-  planId: env.TIER_STARTUP_PLAN_ID as PlanName,
+  planId: tierConstants.TIER_STARTUP_PLAN_ID,
   currency: (startupPlanTier.currency as string) || "usd",
   interval: (startupPlanTier.interval as string) || "monthly",
   promoted: true,
@@ -116,7 +113,7 @@ export const startupPlan: TierPlan = {
 };
 
 export const businessPlan: TierPlan = {
-  planId: env.TIER_BUSINESS_PLAN_ID as PlanName,
+  planId: tierConstants.TIER_BUSINESS_PLAN_ID,
   currency: (businessPlanTier.currency as string) || "usd",
   interval: (businessPlanTier.interval as string) || "monthly",
   promoted: false,

@@ -23,9 +23,10 @@ This project generates marketing content using OpenAI, implements metered pricin
   - Customer billing portal
 - Authentication using Auth.js
 - ORM using **Prisma**
-- Database on **Vercel Postgres** / **Planetscale** / **Supabase**
+- Database on **Vercel Postgres (Default)** / **Planetscale** / **Supabase**
 
 ## Why Tier?
+
 Tier decouples billing, metering, and access checks from your application code. With it, you can conveniently establish new pricing models without needing to restructure your app or concern yourself with grandfathering or breaking changes.
 
 ## Running locally
@@ -64,7 +65,7 @@ This example is powered by the following services:
 - [OpenAI](https://openai.com/) (AI API)
 - [Vercel](https://vercel.com/) (Hosting NextJS)
 - [Auth.js](https://authjs.dev/) (Auth)
-- [Vercel Postgres](https://vercel.com/storage/postgres) / [Supabase](https://supabase.com/) / [Planetscale](https://planetscale.com/) (Database)
+- [Vercel Postgres (default)](https://vercel.com/storage/postgres) / [Supabase](https://supabase.com/) / [Planetscale](https://planetscale.com/) (Database)
 - [Stripe](https://stripe.com/) (Payments)
 
 ## License
