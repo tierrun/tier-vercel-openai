@@ -5,8 +5,8 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 const inputSchema = z.object({
+  completion: z.string(),
   input: z.string(),
-  suggestion: z.string(),
 });
 
 export async function POST(req: Request) {
@@ -24,14 +24,14 @@ export async function POST(req: Request) {
     await db.content.create({
       data: {
         prompt: body.input,
-        generatedContent: body.suggestion,
+        generatedContent: body.completion,
         userId: user.id,
       },
     });
 
     return new Response(
       JSON.stringify({
-        result: body.suggestion,
+        result: body.completion,
       })
     );
   } catch (error) {

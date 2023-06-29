@@ -1,83 +1,56 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useCompletion } from "ai/react";
 
 import { Button } from "@/components/ui/Button";
 
 export function Generate({ user }) {
-  const [input, setInput] = useState("");
   const [error, setError] = useState(false);
-  const [suggestion, setSuggestion] = useState<String>("");
-  const [loading, setLoading] = useState(false);
   const [usedQuota, setUsedQuota] = useState(user?.limit?.used);
+
+  const {
+    completion,
+    setCompletion,
+    input,
+    setInput,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+  } = useCompletion({
+    api: "/api/generate",
+    body: {
+      userId: user.id,
+    },
+    onFinish: async (prompt, completion) => {
+      setUsedQuota(usedQuota + 1);
+      try {
+        console.log(completion);
+        const res = await fetch("/api/save-completion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ completion, input: prompt }),
+        });
+
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+
+  function clearGeneration() {
+    setInput("");
+    setCompletion("");
+  }
 
   useEffect(() => {
     if (input.length <= 100) setError(false);
   }, [input]);
-
-  const saveSuggestion = async (suggestion: string, input: string) => {
-    try {
-      const res = await fetch("/api/save-suggestion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ suggestion, input }),
-      });
-
-      if (!res.ok) {
-        throw new Error(res.statusText);
-      }
-
-      setLoading(false);
-      setUsedQuota(usedQuota + 1);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const submit = async (e: any) => {
-    setSuggestion("");
-    // Check character limit
-    if (input.length > 100) return setError(true);
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ input, userId: user.id }),
-      });
-
-      if (!res.ok) {
-        throw new Error(res.statusText);
-      }
-
-      // This data is a ReadableStream
-      const data = res.body;
-      if (!data) {
-        return;
-      }
-
-      const reader = data.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let finishedCopy = "";
-
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        const chunkValue = decoder.decode(value);
-        setSuggestion((prev) => `${prev}${chunkValue}`);
-        finishedCopy = `${finishedCopy}${chunkValue}`;
-      }
-      saveSuggestion(finishedCopy, input);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <>
@@ -104,13 +77,17 @@ export function Generate({ user }) {
       {/* Generate Section */}
       <div className="mb-12 mt-8 flex flex-col items-start gap-8 xl:mb-60 xl:flex-row xl:justify-between xl:gap-0">
         {/* Input field for prompt*/}
-        <div className="flex w-full flex-col gap-8 xl:w-[473px]">
+        <form
+          className="flex w-full flex-col gap-8 xl:w-[473px]"
+          onSubmit={handleSubmit}
+        >
           <div className="flex flex-col">
             <div className="relative">
               <textarea
                 rows={4}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleInputChange}
+                autoComplete="off"
                 placeholder={`Explain your idea in 100 characters. Eg. Promote a luxury tailoring shop called "Spins" `}
                 className="body w-full resize-none rounded-[4px] border border-slate-6 bg-slate-2 p-6  placeholder:text-slate-9"
               />
@@ -130,20 +107,37 @@ export function Generate({ user }) {
               </p>
             )}
           </div>
-          <Button
-            variant="primary"
-            type="button"
-            onClick={submit}
-            className="disabled:bg-slate-3 disabled:text-slate-11"
-            // disabled={usedQuota < user?.limit.limit ? false : true}
-          >
-            {loading ? "Generating your copy..." : "Generate marketing copy"}
-          </Button>
-        </div>
+          <div className="flex flex-col gap-3">
+            <Button
+              variant="primary"
+              type="submit"
+              className="disabled:bg-slate-3 disabled:text-slate-11"
+              disabled={isLoading}
+              // disabled={usedQuota < user?.limit.limit ? false : true}
+            >
+              {isLoading
+                ? "Generating your copy..."
+                : "Generate marketing copy"}
+            </Button>
+            {input && completion ? (
+              <Button
+                variant="secondary"
+                onClick={clearGeneration}
+                className="disabled:bg-slate-3 disabled:text-slate-11"
+                disabled={isLoading}
+                // disabled={usedQuota < user?.limit.limit ? false : true}
+              >
+                Clear generation
+              </Button>
+            ) : (
+              <></>
+            )}
+          </div>
+        </form>
         {/* Output field for marketing copy */}
         <div className="h-64 w-full rounded-[4px] border border-slate-6 bg-slate-2 p-10 xl:h-[384px] xl:w-[640px]">
-          {suggestion ? (
-            <p className="body">{suggestion}</p>
+          {completion ? (
+            <p className="body">{completion}</p>
           ) : (
             <h3 className="body-l-semibold text-slate-9">
               Your AI generated marketing copy will appear here!
