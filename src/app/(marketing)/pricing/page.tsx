@@ -3,6 +3,7 @@ import { clsx } from "clsx";
 
 import { getPricingPageData } from "@/lib/subscription";
 import { Button } from "@/components/ui/Button";
+import { SignUpButton } from "@/components/marketing/pricing/LandingSignUp";
 import { CheckBoxIcon } from "@/res/icons/CheckBoxIcon";
 
 export const metadata: Metadata = {
@@ -53,13 +54,9 @@ export default async function PricingPage() {
                 </div>
               </div>
               {plan.promoted ? (
-                <Button variant="primary" className="w-[256px]" href="/signup">
-                  Buy this plan
-                </Button>
+                <SignUpButton type="primary">Buy this plan</SignUpButton>
               ) : (
-                <Button variant="outline" className="w-[256px]" href="/signup">
-                  Buy this plan
-                </Button>
+                <SignUpButton type="outline">Buy this plan</SignUpButton>
               )}
 
               <div className="flex flex-col gap-4">
