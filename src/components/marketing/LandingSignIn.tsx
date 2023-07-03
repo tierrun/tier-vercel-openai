@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/Button";
 
-export function SignInForm() {
+export function SignInButton({ className }) {
   async function handleGithub() {
     signIn("github", { callbackUrl: "/generate" });
   }
@@ -14,6 +14,7 @@ export function SignInForm() {
       <Button
         type="button"
         variant="text"
+        className={className}
         onClick={() => {
           handleGithub();
         }}
