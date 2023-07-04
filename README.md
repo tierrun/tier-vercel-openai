@@ -81,6 +81,7 @@ This example is powered by the following services:
 - [Auth.js](https://authjs.dev/) (Auth)
 - [Vercel Postgres (default)](https://vercel.com/storage/postgres) / [Supabase](https://supabase.com/) / [Planetscale](https://planetscale.com/) (Database)
 - [Stripe](https://stripe.com/) (Payments)
+- [Infisical](https://infisical.com/) (Secrets)
 
 ## License
 
