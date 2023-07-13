@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function HistoryPage() {
   const user = await getCurrentUser();
+  if (!user) throw Error("Unauthorized");
 
   const res = await db.content.findMany({
     where: {
