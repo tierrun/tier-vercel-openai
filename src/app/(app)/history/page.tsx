@@ -26,7 +26,7 @@ export default async function HistoryPage() {
       },
     });
   } else {
-    console.log();
+    console.log("User ID cannot be empty");
   }
 
   return (
