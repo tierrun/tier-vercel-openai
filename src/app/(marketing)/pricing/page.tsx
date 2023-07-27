@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 import { clsx } from "clsx";
 
-import { getPricingPageData } from "@/lib/subscription";
-import { Button } from "@/components/ui/Button";
+import { pullPricingTableData } from "@/lib/services/pricingTableData";
 import { SignUpButton } from "@/components/marketing/pricing/LandingSignUp";
 import { CheckBoxIcon } from "@/res/icons/CheckBoxIcon";
 
@@ -10,7 +9,7 @@ export const metadata: Metadata = {
   title: "Pricing",
 };
 
-const pricing = await getPricingPageData();
+const pricing = await pullPricingTableData();
 
 export default async function PricingPage() {
   return (

@@ -53,9 +53,9 @@ npm run dev
 
 ## Tier Pricing Models
 
-- Prod - https://model.tier.run/clhdwdn8v01zgkef5viv10kwr
-- Staging - https://model.tier.run/clhdwboez01uqkef5s0qailg5
-- Dev - https://model.tier.run/clhdvg0ab01i7kef5dy920jm6
+- Prod - https://model.tier.run/clkkv3fv93bbko972m4w3x9o8
+- Staging - https://model.tier.run/clkkurlas3a4qo9725bj1hfr0
+- Dev - https://model.tier.run/clkk2dgjs30kdo972fptgizyx
 
 You can clone the pricing model from the above links and make it your own.
 

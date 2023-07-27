@@ -3,7 +3,7 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { z } from "zod";
 
 import { env } from "@/env.mjs";
-import { tierConstants } from "@/config/tierConstants";
+import { TIER_AICOPY_FEATURE_ID, TIER_EXTRACOPY_FEATURE_ID } from "@/config/tierConstants";
 import { openAI } from "@/lib/ai";
 import { tier } from "@/lib/tier";
 
@@ -43,10 +43,7 @@ export async function POST(req: Request, context: NextFetchEvent) {
     const json = await req.json();
     const body = inputSchema.parse(json);
 
-    const tierAnswer = await tier.can(
-      `org:${body.userId}`,
-      tierConstants.TIER_AICOPY_FEATURE_ID
-    );
+    const tierAnswer = await tier.can(`org:${body.userId}`, TIER_AICOPY_FEATURE_ID);
 
     if (tierAnswer.ok) {
       const stream = await generateCopyStream(body.prompt, context);
@@ -55,10 +52,7 @@ export async function POST(req: Request, context: NextFetchEvent) {
 
       return new StreamingTextResponse(stream);
     } else {
-      const tierExtraCopyAnswer = await tier.can(
-        `org:${body.userId}`,
-        tierConstants.TIER_EXTRACOPY_FEATURE_ID
-      );
+      const tierExtraCopyAnswer = await tier.can(`org:${body.userId}`, TIER_EXTRACOPY_FEATURE_ID);
 
       if (tierExtraCopyAnswer.ok) {
         const stream = await generateCopyStream(body.prompt, context);

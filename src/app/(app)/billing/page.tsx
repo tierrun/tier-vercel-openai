@@ -1,10 +1,9 @@
 import { Metadata } from "next";
 import { clsx } from "clsx";
-import { PlanName } from "tier";
 
-import { getPlan } from "@/config/subscriptionPlans";
+import { pullCurrentPlan } from "@/lib/services/currentPlan";
+import { pullPricingTableData } from "@/lib/services/pricingTableData";
 import { getCurrentUser } from "@/lib/session";
-import { getPricingPageData } from "@/lib/subscription";
 import { tier } from "@/lib/tier";
 import { Button } from "@/components/ui/Button";
 import { CheckBoxIcon } from "@/res/icons/CheckBoxIcon";
@@ -12,8 +11,6 @@ import { CreditCardIcon } from "@/res/icons/CreditCardIcon";
 import { TierLogo } from "@/res/logos/TierLogo";
 
 import { CheckoutButton } from "./CheckoutButton";
-
-// import { checkout } from "./action";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -23,42 +20,24 @@ export const metadata: Metadata = {
   description: "Manage your subscription and know about your usage",
 };
 
-const pricing = await getPricingPageData();
-
 export default async function BillingPage() {
+  const pricing = await pullPricingTableData();
+
   const user = await getCurrentUser();
-  console.log(user);
 
   const freeUsageLimit = user?.limit.limit as number;
   const used = user?.limit?.used as number;
 
   const phase = await tier.lookupPhase(`org:${user?.id}`);
-  console.log(phase);
 
-  var currentPlan = {
-    planId: "plan:sample@1",
-    currency: "eur",
-    interval: "yearly",
-    name: "Sample",
-    base: 20000,
-  };
-  if (phase.plans !== undefined) {
-    currentPlan = (await getPlan(phase.plans[0] as PlanName)) as {
-      planId: PlanName;
-      currency: string;
-      interval: string;
-      name: string;
-      base: number;
-      extraUsageRate: number | null;
-    };
-  }
+  const currentPlan = await pullCurrentPlan(phase, pricing);
 
   const org = await tier.lookupOrg(`org:${user?.id}`);
   const paymentMethodResponse = await tier.lookupPaymentMethods(
     `org:${user?.id}`
   );
   const paymentMethod = paymentMethodResponse.methods[0];
-  // console.log(paymentMethod.card);
+  console.log(paymentMethod);
 
   return (
     <>
@@ -99,7 +78,7 @@ export default async function BillingPage() {
           <div
             className={clsx(
               "flex flex-col gap-9 ",
-              currentPlan.extraUsageRate !== null
+              currentPlan.extraUsageRate !== undefined
                 ? "border-r border-slate-6 pr-12"
                 : ""
             )}
@@ -143,7 +122,7 @@ export default async function BillingPage() {
             </div>
           </div>
           {/* Overages */}
-          {currentPlan.extraUsageRate !== null ? (
+          {currentPlan.extraUsageRate !== undefined ? (
             <div className="flex flex-col gap-5">
               <p className="text-slate-11">Overages</p>
               <div className="flex items-center gap-3">

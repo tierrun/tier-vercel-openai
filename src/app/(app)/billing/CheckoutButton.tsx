@@ -23,10 +23,10 @@ export function CheckoutButton({ plan, currentPlan }) {
         });
       }
       const session = await response.json();
+      console.log(session);
       if (session) {
         window.location.href = session.url;
       }
-      // router.push(`/app/generate`);
     } catch (error) {
       console.log(error);
     }

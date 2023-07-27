@@ -4,7 +4,11 @@ import GithubProvider from "next-auth/providers/github";
 import { OrgInfo } from "tier";
 
 import { env } from "@/env.mjs";
-import { tierConstants } from "@/config/tierConstants";
+import {
+  freeAiCopyConstants,
+  TIER_AICOPY_FEATURE_ID,
+  TIER_FREE_PLAN_ID,
+} from "@/config/tierConstants";
 import { db } from "@/lib/db";
 import { tier } from "@/lib/tier";
 
@@ -31,32 +35,31 @@ export const authOptions: NextAuthOptions = {
         try {
           const limits = await tier.lookupLimit(
             `org:${session?.user?.id}`,
-            tierConstants.TIER_AICOPY_FEATURE_ID
+            TIER_AICOPY_FEATURE_ID
           );
-          console.log(limits);
           session.user.limit = limits;
         } catch (error) {
-          await tier.subscribe(
-            `org:${session?.user?.id}`,
-            tierConstants.TIER_FREE_PLAN_ID,
-            {
-              info: {
-                name: session?.user?.name as string,
-                email: session?.user?.email as string,
-              } as OrgInfo,
-            }
-          );
+          await tier.subscribe(`org:${session?.user?.id}`, TIER_FREE_PLAN_ID, {
+            info: {
+              name: session?.user?.name as string,
+              email: session?.user?.email as string,
+            } as OrgInfo,
+          });
           try {
             const limits = await tier.lookupLimit(
               `org:${session?.user?.id}`,
-              tierConstants.TIER_AICOPY_FEATURE_ID
+              TIER_AICOPY_FEATURE_ID
             );
             session.user.limit = limits;
           } catch (error) {
+            // Sometimes there is a small delay in subscribing to a feature and retrieving it as
+            // we need to push to stripe and then read using Tier.
+            // We should set the default let manually in that case.
+            // Default should be AI Copy of Free plan
             session.user.limit = {
-              feature: tierConstants.TIER_AICOPY_FEATURE_ID,
-              used: 0,
-              limit: 1,
+              feature: TIER_AICOPY_FEATURE_ID,
+              used: freeAiCopyConstants.used,
+              limit: freeAiCopyConstants.limit,
             };
             console.log("No Limits found for the first time user subscription");
           }

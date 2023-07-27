@@ -38,10 +38,10 @@ export async function GET(req: Request) {
 
       const checkout = await tier.checkout(`org:${user?.id}`, successUrl, {
         cancelUrl,
-        features: plan,
+        // features: plan,
       });
 
-      await tier.cancel(`org:${user?.id}`);
+      // await tier.cancel(`org:${user?.id}`);
 
       return new Response(JSON.stringify({ url: checkout.url }));
     } else {
