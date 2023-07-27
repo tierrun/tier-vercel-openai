@@ -12,7 +12,7 @@ export function CheckoutButton({ plan, currentPlan }) {
   const subscribe = async (planId) => {
     try {
       setChangePlan(true);
-      const response = await fetch(`/api/subscribe?plan=${planId}`, {
+      const response = await fetch(`/api/change-plan?plan=${planId}`, {
         method: "GET",
       });
       if (!response?.ok) {

@@ -1,8 +1,9 @@
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import type { PlanName } from "tier";
 import { z } from "zod";
 
-import { env } from "@/env.mjs";
 import { authOptions } from "@/lib/auth";
 import { tier } from "@/lib/tier";
 
@@ -18,32 +19,11 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const plan = searchParams.get("plan") as PlanName;
 
-    const paymentMethod = await tier.lookupPaymentMethods(`org:${user?.id}`);
-
-    if (paymentMethod.methods[0] === undefined) {
-      console.log("set up mode checkout");
-      const successUrl = new URL("/generate", env.NEXT_PUBLIC_APP_URL).toString();
-      const cancelUrl = new URL("/billing", env.NEXT_PUBLIC_APP_URL).toString();
-
-      const checkout = await tier.checkout(`org:${user?.id}`, successUrl, {
-        cancelUrl,
-      });
-
-      // await tier.cancel(`org:${user?.id}`);
-
-      return new Response(JSON.stringify({ url: checkout.url }));
-    } else {
-      console.log("subscribe");
-      try {
-        await tier.subscribe(`org:${user?.id}`, plan);
-      } catch (error) {
-        console.log(error);
-      }
-      return new Response(
-        JSON.stringify({
-          url: new URL("/generate", env.NEXT_PUBLIC_APP_URL),
-        })
-      );
+    try {
+      await tier.subscribe(`org:${user?.id}`, plan);
+      return NextResponse.redirect(new URL("/generate", req.url));
+    } catch (error) {
+      console.log(error);
     }
   } catch (error) {
     if (error instanceof z.ZodError) {

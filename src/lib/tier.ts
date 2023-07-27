@@ -1,6 +1,6 @@
-import { Tier } from "tier"; // If you do not want to make Tier work on edge
+// import { Tier } from "tier"; // If you do not want to make Tier work on edge
 
-// import { Tier } from "tier/client"; // If you want to make Tier work on edge
+import { Tier } from "tier/client"; // If you want to make Tier work on edge
 
 import { env } from "@/env.mjs";
 
