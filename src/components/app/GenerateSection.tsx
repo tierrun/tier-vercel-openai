@@ -4,44 +4,47 @@ import { useEffect, useState } from "react";
 import { useCompletion } from "ai/react";
 
 import { Button } from "@/components/ui/Button";
+import { toast } from "@/components/ui/use-toast";
 
 export function Generate({ user }) {
   const [error, setError] = useState(false);
   const [usedQuota, setUsedQuota] = useState(user?.limit?.used);
 
-  const {
-    completion,
-    setCompletion,
-    input,
-    setInput,
-    isLoading,
-    handleInputChange,
-    handleSubmit,
-  } = useCompletion({
-    api: "/api/generate",
-    body: {
-      userId: user.id,
-    },
-    onFinish: async (prompt, completion) => {
-      setUsedQuota(usedQuota + 1);
-      try {
-        console.log(completion);
-        const res = await fetch("/api/save-completion", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ completion, input: prompt }),
-        });
-
-        if (!res.ok) {
-          throw new Error(res.statusText);
+  const { completion, setCompletion, input, setInput, isLoading, handleInputChange, handleSubmit } =
+    useCompletion({
+      api: "/api/generate",
+      body: {
+        userId: user.id,
+      },
+      onResponse: async (res) => {
+        if (res.status === 402) {
+          toast({
+            title: "Upgrade your plan",
+            description: res.statusText,
+          });
         }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
+      },
+      onFinish: async (prompt, completion) => {
+        setUsedQuota(usedQuota + 1);
+        try {
+          console.log(completion);
+          const res = await fetch("/api/save-completion", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ completion, input: prompt }),
+          });
+
+          if (!res.ok) {
+            throw new Error(res.statusText);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    });
+  console.log(completion);
 
   function clearGeneration() {
     setInput("");
@@ -57,16 +60,14 @@ export function Generate({ user }) {
       {/* Greetings */}
       <div className="mt-16 flex flex-col items-center gap-3 lg:flex-row lg:justify-between lg:gap-0">
         <h1 className="h4">
-          Hello{" "}
-          <span className="text-crimson-9">{user?.name ? user.name : ""}</span>
+          Hello <span className="text-crimson-9">{user?.name ? user.name : ""}</span>
         </h1>
         {user?.limit && usedQuota < user?.limit.limit ? (
           <p>{`${usedQuota}/${user?.limit.limit} copy remaining`}</p>
         ) : (
           <div className="flex items-center gap-3">
             <p>
-              {user?.limit?.limit}/{user?.limit?.limit} free quota over. Extras
-              charged per copy
+              {user?.limit?.limit}/{user?.limit?.limit} free quota over. Extras charged per copy
             </p>
             <Button variant={"secondary"} href="/billing">
               Upgrade
@@ -77,10 +78,7 @@ export function Generate({ user }) {
       {/* Generate Section */}
       <div className="mb-12 mt-8 flex flex-col items-start gap-8 xl:mb-60 xl:flex-row xl:justify-between xl:gap-0">
         {/* Input field for prompt*/}
-        <form
-          className="flex w-full flex-col gap-8 xl:w-[473px]"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex w-full flex-col gap-8 xl:w-[473px]" onSubmit={handleSubmit}>
           <div className="flex flex-col">
             <div className="relative">
               <textarea
@@ -101,11 +99,7 @@ export function Generate({ user }) {
               </div>
             </div>
             {/* Error Message */}
-            {error && (
-              <p className="-mt-1 text-xs text-red-600">
-                Character limit exceeded
-              </p>
-            )}
+            {error && <p className="-mt-1 text-xs text-red-600">Character limit exceeded</p>}
           </div>
           <div className="flex flex-col gap-3">
             <Button
@@ -115,9 +109,7 @@ export function Generate({ user }) {
               disabled={isLoading}
               // disabled={usedQuota < user?.limit.limit ? false : true}
             >
-              {isLoading
-                ? "Generating your copy..."
-                : "Generate marketing copy"}
+              {isLoading ? "Generating your copy..." : "Generate marketing copy"}
             </Button>
             {input && completion ? (
               <Button

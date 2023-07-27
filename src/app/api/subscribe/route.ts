@@ -21,24 +21,12 @@ export async function GET(req: Request) {
     const paymentMethod = await tier.lookupPaymentMethods(`org:${user?.id}`);
 
     if (paymentMethod.methods[0] === undefined) {
-      console.log("checkout");
-      const successUrl = new URL(
-        "/generate",
-        env.NEXT_PUBLIC_APP_URL
-      ).toString();
+      console.log("set up mode checkout");
+      const successUrl = new URL("/generate", env.NEXT_PUBLIC_APP_URL).toString();
       const cancelUrl = new URL("/billing", env.NEXT_PUBLIC_APP_URL).toString();
-
-      await tier.updateOrg(`org:${user?.id}`, {
-        email: user?.email as string,
-        name: user?.name as string,
-        description: "", //TODO:
-        metadata: {}, //TODO:
-        phone: "", //TODO:
-      });
 
       const checkout = await tier.checkout(`org:${user?.id}`, successUrl, {
         cancelUrl,
-        // features: plan,
       });
 
       // await tier.cancel(`org:${user?.id}`);
@@ -62,9 +50,6 @@ export async function GET(req: Request) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
     }
 
-    return new Response(
-      "Something really bad happened when trying to subscribe",
-      { status: 500 }
-    );
+    return new Response("Something really bad happened when trying to subscribe", { status: 500 });
   }
 }

@@ -31,38 +31,28 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.picture;
 
-        // Check if there are any plans, else subscribe to the free plan
+        // Check limits of AI copy feature and add them to the user session data
         try {
-          const limits = await tier.lookupLimit(
-            `org:${session?.user?.id}`,
-            TIER_AICOPY_FEATURE_ID
-          );
+          const limits = await tier.lookupLimit(`org:${session?.user?.id}`, TIER_AICOPY_FEATURE_ID);
           session.user.limit = limits;
         } catch (error) {
+          // Auto subscribe user to the free plan if they do not have any subscription already.
+          // Add OrgInfo to create/update the customer profile while subscribing
           await tier.subscribe(`org:${session?.user?.id}`, TIER_FREE_PLAN_ID, {
             info: {
               name: session?.user?.name as string,
               email: session?.user?.email as string,
             } as OrgInfo,
           });
-          try {
-            const limits = await tier.lookupLimit(
-              `org:${session?.user?.id}`,
-              TIER_AICOPY_FEATURE_ID
-            );
-            session.user.limit = limits;
-          } catch (error) {
-            // Sometimes there is a small delay in subscribing to a feature and retrieving it as
-            // we need to push to stripe and then read using Tier.
-            // We should set the default let manually in that case.
-            // Default should be AI Copy of Free plan
-            session.user.limit = {
-              feature: TIER_AICOPY_FEATURE_ID,
-              used: freeAiCopyConstants.used,
-              limit: freeAiCopyConstants.limit,
-            };
-            console.log("No Limits found for the first time user subscription");
-          }
+
+          // Add the Free plan limits as default
+          // We could fetch this directly from Tier,
+          // but when you call lookupLimts directly after subscription it might break
+          session.user.limit = {
+            feature: TIER_AICOPY_FEATURE_ID,
+            used: freeAiCopyConstants.used,
+            limit: freeAiCopyConstants.limit,
+          };
         } finally {
           return session;
         }

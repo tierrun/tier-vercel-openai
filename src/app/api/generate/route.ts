@@ -61,8 +61,9 @@ export async function POST(req: Request, context: NextFetchEvent) {
 
         return new StreamingTextResponse(stream);
       } else {
-        return new Response("You are not allowed to use this feature", {
+        return new Response("You expired your credits and need to upgrade!", {
           status: 402,
+          statusText: "You expired your credits and need to upgrade!",
         });
       }
     }
