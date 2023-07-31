@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useCompletion } from "ai/react";
+import type { Usage } from "tier";
 
 import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/use-toast";
 
-export function Generate({ user }) {
+export function Generate({ user, featureLimits }: { user: any; featureLimits: Usage }) {
   const [error, setError] = useState(false);
-  const [usedQuota, setUsedQuota] = useState(user?.limit?.used);
+  const [usedQuota, setUsedQuota] = useState(featureLimits.used);
 
   const { completion, setCompletion, input, setInput, isLoading, handleInputChange, handleSubmit } =
     useCompletion({
@@ -62,12 +63,12 @@ export function Generate({ user }) {
         <h1 className="h4">
           Hello <span className="text-crimson-9">{user?.name ? user.name : ""}</span>
         </h1>
-        {user?.limit && usedQuota < user?.limit.limit ? (
-          <p>{`${usedQuota}/${user?.limit.limit} copy remaining`}</p>
+        {featureLimits.limit && usedQuota < featureLimits.limit ? (
+          <p>{`${usedQuota}/${featureLimits.limit} copy remaining`}</p>
         ) : (
           <div className="flex items-center gap-3">
             <p>
-              {user?.limit?.limit}/{user?.limit?.limit} free quota over. Extras charged per copy
+              {featureLimits.limit}/{featureLimits.limit} free quota over. Extras charged per copy
             </p>
             <Button variant={"secondary"} href="/billing">
               Upgrade

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { clsx } from "clsx";
 
+import { TIER_AICOPY_FEATURE_ID } from "@/config/tierConstants";
 import { pullCurrentPlan } from "@/lib/services/currentPlan";
 import { pullPricingTableData } from "@/lib/services/pricingTableData";
 import { getCurrentUser } from "@/lib/session";
@@ -25,19 +26,25 @@ export default async function BillingPage() {
 
   const user = await getCurrentUser();
 
-  const freeUsageLimit = user?.limit.limit as number;
-  const used = user?.limit?.used as number;
+  // Fetch the feature consumption and limit of the AI copy feature for the plan currently subscribed
+  const featureLimits = await tier.lookupLimit(`org:${user?.id}`, TIER_AICOPY_FEATURE_ID);
 
+  const usageLimit = featureLimits.limit;
+  const used = featureLimits.used;
+
+  // Fetch the phase data of the current subscription
   const phase = await tier.lookupPhase(`org:${user?.id}`);
 
+  // Fetch the current plan from the pricing table data
   const currentPlan = await pullCurrentPlan(phase, pricing);
 
+  // Fetch organization/user details
   const org = await tier.lookupOrg(`org:${user?.id}`);
-  const paymentMethodResponse = await tier.lookupPaymentMethods(
-    `org:${user?.id}`
-  );
+
+  // Fetch the saved payment methods
+  const paymentMethodResponse = await tier.lookupPaymentMethods(`org:${user?.id}`);
+
   const paymentMethod = paymentMethodResponse.methods[0];
-  console.log(paymentMethod);
 
   return (
     <>
@@ -60,13 +67,9 @@ export default async function BillingPage() {
             <div className="flex flex-col gap-2">
               <p className="body-xl">{currentPlan.name}</p>
               <div className="flex items-center gap-3">
-                <h5 className="text-[32px] font-bold leading-9">
-                  {`$${currentPlan.base / 100}`}
-                </h5>
+                <h5 className="text-[32px] font-bold leading-9">{`$${currentPlan.base / 100}`}</h5>
                 <div className="flex flex-col items-start">
-                  <span className="caption">
-                    {currentPlan.currency.toUpperCase()}
-                  </span>
+                  <span className="caption">{currentPlan.currency.toUpperCase()}</span>
                   <span className="caption-s text-slate-11">
                     {`Billed ${currentPlan.interval}`}
                   </span>
@@ -78,17 +81,13 @@ export default async function BillingPage() {
           <div
             className={clsx(
               "flex flex-col gap-9 ",
-              currentPlan.extraUsageRate !== undefined
-                ? "border-r border-slate-6 pr-12"
-                : ""
+              currentPlan.extraUsageRate !== undefined ? "border-r border-slate-6 pr-12" : ""
             )}
           >
             <p className="text-slate-11">Copies generated</p>
             <div className="flex flex-col gap-2">
               <div className="flex flex-row-reverse items-end justify-between">
-                <p className="caption-s text-slate-11">
-                  Free copies allowed : {freeUsageLimit}
-                </p>
+                <p className="caption-s text-slate-11">Free copies allowed : {usageLimit}</p>
               </div>
               {/* Progress */}
               <div className="relative h-2 w-[442px] bg-slate-4">
@@ -96,27 +95,25 @@ export default async function BillingPage() {
                   className="absolute h-2 bg-red-600"
                   style={{
                     width: `${
-                      freeUsageLimit - used > 0
-                        ? (used / freeUsageLimit) * 100
-                        : (freeUsageLimit / freeUsageLimit) * 100
+                      usageLimit - used > 0
+                        ? (used / usageLimit) * 100
+                        : (usageLimit / usageLimit) * 100
                     }%`,
                   }}
                 ></div>
               </div>
               <div className="flex items-center justify-between">
-                {freeUsageLimit - used > 0 ? (
+                {usageLimit - used > 0 ? (
                   <p className="caption-s text-slate-11">
-                    {freeUsageLimit - used} remaining in free quota
+                    {usageLimit - used} remaining in free quota
                   </p>
                 ) : (
-                  <p className="caption-s text-slate-11">
-                    0 remaining in free quota
-                  </p>
+                  <p className="caption-s text-slate-11">0 remaining in free quota</p>
                 )}
                 <p className="caption-s text-slate-11">
-                  {freeUsageLimit - used > 0
-                    ? `${used} / ${freeUsageLimit}`
-                    : `${freeUsageLimit} / ${freeUsageLimit}`}
+                  {usageLimit - used > 0
+                    ? `${used} / ${usageLimit}`
+                    : `${usageLimit} / ${usageLimit}`}
                 </p>
               </div>
             </div>
@@ -128,18 +125,14 @@ export default async function BillingPage() {
               <div className="flex items-center gap-3">
                 <p className="text-[32px] font-bold leading-9">
                   $
-                  {freeUsageLimit - used > 0
+                  {usageLimit - used > 0
                     ? 0
-                    : (used - freeUsageLimit) *
-                      (currentPlan.extraUsageRate / 100)}
+                    : (used - usageLimit) * (currentPlan.extraUsageRate / 100)}
                 </p>
-                <p className="caption text-slate-11">
-                  @ ${currentPlan.extraUsageRate / 100}/copy
-                </p>
+                <p className="caption text-slate-11">@ ${currentPlan.extraUsageRate / 100}/copy</p>
               </div>
               <p className="caption text-slate-11">
-                Additional copies generated:{" "}
-                {freeUsageLimit - used > 0 ? 0 : used - freeUsageLimit}
+                Additional copies generated: {usageLimit - used > 0 ? 0 : used - usageLimit}
               </p>
             </div>
           ) : (
@@ -157,24 +150,16 @@ export default async function BillingPage() {
               key={planIndex}
               className={clsx(
                 "flex h-[353px] flex-col gap-8 rounded-lg bg-slate-2 px-6 py-12",
-                plan.planId === currentPlan.planId
-                  ? "border-[3px] border-crimson-6"
-                  : ""
+                plan.planId === currentPlan.planId ? "border-[3px] border-crimson-6" : ""
               )}
             >
               <div className="flex flex-col gap-2">
                 <h6 className="body-semibold text-slate-12">{plan.name}</h6>
                 <div className="flex items-center gap-3">
-                  <h5 className="text-[32px] font-bold leading-9">
-                    ${plan.base / 100}
-                  </h5>
+                  <h5 className="text-[32px] font-bold leading-9">${plan.base / 100}</h5>
                   <div className="flex flex-col items-start">
-                    <span className="caption">
-                      {plan.currency.toUpperCase()}
-                    </span>
-                    <span className="caption-s text-slate-11">
-                      Billed {plan.interval}
-                    </span>
+                    <span className="caption">{plan.currency.toUpperCase()}</span>
+                    <span className="caption-s text-slate-11">Billed {plan.interval}</span>
                   </div>
                 </div>
               </div>
@@ -196,9 +181,7 @@ export default async function BillingPage() {
                     <CheckBoxIcon
                       className={clsx(
                         "h-6 w-6 ",
-                        plan.planId === currentPlan.planId
-                          ? "stroke-crimson-9"
-                          : "stroke-slate-11"
+                        plan.planId === currentPlan.planId ? "stroke-crimson-9" : "stroke-slate-11"
                       )}
                     />
                     <p className="body text-slate-11">{feature}</p>
@@ -236,12 +219,9 @@ export default async function BillingPage() {
               <div className="flex gap-4">
                 <CreditCardIcon />
                 <div className="flex flex-col gap-2">
-                  <p className="body-semibold">
-                    Card ending in {paymentMethod.card.last4}
-                  </p>
+                  <p className="body-semibold">Card ending in {paymentMethod.card.last4}</p>
                   <p className="text-slate-11">
-                    Expires {paymentMethod.card.exp_month}/
-                    {paymentMethod.card.exp_year}
+                    Expires {paymentMethod.card.exp_month}/{paymentMethod.card.exp_year}
                   </p>
                 </div>
               </div>

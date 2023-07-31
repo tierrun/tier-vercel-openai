@@ -27,10 +27,9 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.picture;
 
-        // Check limits of AI copy feature and add them to the user session data
+        // Check if org/user already exists in Stripe, else create and subscribe to free tier
         try {
-          const limits = await tier.lookupLimit(`org:${session?.user?.id}`, TIER_AICOPY_FEATURE_ID);
-          session.user.limit = limits;
+          await tier.lookupOrg(`org:${session?.user?.id}`);
         } catch (error) {
           // Auto subscribe user to the free plan if they do not have any subscription already.
           // Add OrgInfo to create/update the customer profile while subscribing
@@ -40,9 +39,6 @@ export const authOptions: NextAuthOptions = {
               email: session?.user?.email as string,
             } as OrgInfo,
           });
-
-          const limits = await tier.lookupLimit(`org:${session?.user?.id}`, TIER_AICOPY_FEATURE_ID);
-          session.user.limit = limits;
         } finally {
           return session;
         }
