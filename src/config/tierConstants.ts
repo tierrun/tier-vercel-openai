@@ -12,12 +12,6 @@ export const TIER_BASE_FEATURE_ID = "feature:base";
 export const TIER_AICOPY_FEATURE_ID = "feature:aicopy";
 export const TIER_EXTRACOPY_FEATURE_ID = "feature:extraaicopy";
 
-// AI copy constants for free plan as default limit value for the app
-export const freeAiCopyConstants = {
-  used: 0,
-  limit: 1,
-};
-
 // Make sure to maintain the order of the plan that you would require
 export const tierPlanConstants: TierPlanConstant[] = [
   {

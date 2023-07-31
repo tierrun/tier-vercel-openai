@@ -4,11 +4,7 @@ import GithubProvider from "next-auth/providers/github";
 import { OrgInfo } from "tier";
 
 import { env } from "@/env.mjs";
-import {
-  freeAiCopyConstants,
-  TIER_AICOPY_FEATURE_ID,
-  TIER_FREE_PLAN_ID,
-} from "@/config/tierConstants";
+import { TIER_AICOPY_FEATURE_ID, TIER_FREE_PLAN_ID } from "@/config/tierConstants";
 import { db } from "@/lib/db";
 import { tier } from "@/lib/tier";
 
@@ -45,14 +41,8 @@ export const authOptions: NextAuthOptions = {
             } as OrgInfo,
           });
 
-          // Add the Free plan limits as default
-          // We could fetch this directly from Tier,
-          // but when you call lookupLimts directly after subscription it might break
-          session.user.limit = {
-            feature: TIER_AICOPY_FEATURE_ID,
-            used: freeAiCopyConstants.used,
-            limit: freeAiCopyConstants.limit,
-          };
+          const limits = await tier.lookupLimit(`org:${session?.user?.id}`, TIER_AICOPY_FEATURE_ID);
+          session.user.limit = limits;
         } finally {
           return session;
         }
