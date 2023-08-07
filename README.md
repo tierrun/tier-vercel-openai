@@ -55,7 +55,8 @@ npm run dev
 
 - Prod - https://model.tier.run/clkkv3fv93bbko972m4w3x9o8
 - Staging - https://model.tier.run/clkkurlas3a4qo9725bj1hfr0
-- Dev - https://model.tier.run/clkk2dgjs30kdo972fptgizyx
+- Dev - https://model.tier.run/edit/cll0j0ya64mrao972ccqueu7i
+- Dev (New Model) - https://model.tier.run/clkk2dgjs30kdo972fptgizyx
 
 You can clone the pricing model from the above links and make it your own.
 

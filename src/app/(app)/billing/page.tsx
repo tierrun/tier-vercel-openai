@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { clsx } from "clsx";
+import type Stripe from "stripe";
 
 import { TIER_AICOPY_FEATURE_ID } from "@/config/tierConstants";
 import { pullCurrentPlan } from "@/lib/services/currentPlan";
@@ -34,6 +35,7 @@ export default async function BillingPage() {
 
   // Fetch the phase data of the current subscription
   const phase = await tier.lookupPhase(`org:${user?.id}`);
+  console.log(phase.current?.end);
 
   // Fetch the current plan from the pricing table data
   const currentPlan = await pullCurrentPlan(phase, pricing);
@@ -44,7 +46,7 @@ export default async function BillingPage() {
   // Fetch the saved payment methods
   const paymentMethodResponse = await tier.lookupPaymentMethods(`org:${user?.id}`);
 
-  const paymentMethod = paymentMethodResponse.methods[0];
+  const paymentMethod = paymentMethodResponse.methods[0] as unknown as Stripe.PaymentMethod;
 
   return (
     <>
@@ -213,7 +215,7 @@ export default async function BillingPage() {
             </div>
           )}
           {/* Payment method */}
-          {paymentMethod && (
+          {paymentMethod && paymentMethod.card && (
             <div className="flex items-start gap-16">
               <p className="text-slate-11">Payment method</p>
               <div className="flex gap-4">
