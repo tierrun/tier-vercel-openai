@@ -6,7 +6,6 @@ import { tier } from "@/lib/tier";
 import { Generate } from "@/components/app/GenerateSection";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Generate Copy",
