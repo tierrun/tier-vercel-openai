@@ -37,7 +37,7 @@ export default async function IndexPage() {
           </Link>
           <Link
             href="https://github.com/tierrun/tier-vercel-openai/stargazers"
-            className="group rounded-r-[4px] border-y border-r border-slate-7 px-2 py-[2px] hover:bg-slate-2"
+            className="group rounded-r-[4px] border-y border-r border-slate-7 bg-slate-1 px-2 py-[2px] hover:bg-slate-2"
           >
             <span className="caption-s font-medium text-slate-12 group-hover:text-crimson-9">
               {data.stargazers_count}
