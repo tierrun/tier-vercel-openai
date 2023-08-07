@@ -57,7 +57,7 @@ export async function POST(req: Request, context: NextFetchEvent) {
       if (tierExtraCopyAnswer.ok) {
         const stream = await generateCopyStream(body.prompt, context);
 
-        await tierAnswer.report();
+        await tierExtraCopyAnswer.report();
 
         return new StreamingTextResponse(stream);
       } else {
