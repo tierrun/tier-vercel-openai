@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { clsx } from "clsx";
 
 import { pullPricingTableData } from "@/lib/services/pricingTableData";
+import { BgPattern } from "@/components/ui/Bgpattern";
 import { SignUpButton } from "@/components/marketing/pricing/LandingSignUp";
 import { CheckBoxIcon } from "@/res/icons/CheckBoxIcon";
 
@@ -13,6 +14,8 @@ export default async function PricingPage() {
   const pricing = await pullPricingTableData();
   return (
     <>
+      {/* Bg Pattern */}
+      <BgPattern />
       {/* Hero Copy */}
       <div className="mt-16 flex flex-col items-center gap-4">
         <h1 className="md:h1 h2 w-full px-4 text-center md:w-[805px] md:px-0">
