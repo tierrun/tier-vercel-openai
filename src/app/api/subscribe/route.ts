@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import type Stripe from "stripe";

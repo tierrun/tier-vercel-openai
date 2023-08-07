@@ -3,7 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import { OrgInfo } from "tier";
 
-import { env } from "@/env.mjs";
+import { env } from "@/env.js";
 import { TIER_AICOPY_FEATURE_ID, TIER_FREE_PLAN_ID } from "@/config/tierConstants";
 import { db } from "@/lib/db";
 import { tier } from "@/lib/tier";

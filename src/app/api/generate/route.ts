@@ -2,7 +2,7 @@ import { NextFetchEvent } from "next/server";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { z } from "zod";
 
-import { env } from "@/env.mjs";
+import { env } from "@/env.js";
 import { TIER_AICOPY_FEATURE_ID, TIER_EXTRACOPY_FEATURE_ID } from "@/config/tierConstants";
 import { openAI } from "@/lib/ai";
 import { tier } from "@/lib/tier";

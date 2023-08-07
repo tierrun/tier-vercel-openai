@@ -2,7 +2,7 @@
 
 import { Tier } from "tier/client"; // If you want to make Tier work on edge
 
-import { env } from "@/env.mjs";
+import { env } from "@/env.js";
 
 export const tier = new Tier({
   baseURL: env.TIER_BASE_URL as string,
