@@ -16,12 +16,7 @@ export function VercelLogo(props: any) {
       </g>
       <defs>
         <clipPath id="clip0_380_2237">
-          <rect
-            width="105"
-            height="24"
-            fill="white"
-            transform="translate(0.666992)"
-          />
+          <rect width="105" height="24" fill="white" transform="translate(0.666992)" />
         </clipPath>
       </defs>
     </svg>

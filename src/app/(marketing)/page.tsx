@@ -3,16 +3,13 @@ import Link from "next/link";
 import { SignUpButton } from "@/components/marketing/LandingSignUp";
 
 export default async function IndexPage() {
-  const res = await fetch(
-    "https://api.github.com/repos/tierrun/tier-vercel-openai",
-    {
-      method: "GET",
-      next: { revalidate: 60 },
-    }
-  );
+  const res = await fetch("https://api.github.com/repos/tierrun/tier-vercel-openai", {
+    method: "GET",
+    next: { revalidate: 60 },
+  });
   const data = await res.json();
 
-  function GitHubIcon(props) {
+  function GitHubIcon(props: any) {
     return (
       <svg viewBox="0 0 20 20" aria-hidden="true" {...props}>
         <path
@@ -45,12 +42,10 @@ export default async function IndexPage() {
           </Link>
         </div>
         <h1 className="md:display h2 w-full px-4 text-center md:w-[802px] md:px-0">
-          Generate the best{" "}
-          <span className="text-crimson-9">marketing copy</span>
+          Generate the best <span className="text-crimson-9">marketing copy</span>
         </h1>
         <p className="body-xl px-4 text-center text-slate-11 md:w-[572px] md:px-0">
-          Put an end to your creative block, get help from your AI creative
-          writer
+          Put an end to your creative block, get help from your AI creative writer
         </p>
       </div>
       {/* Hero CTA */}

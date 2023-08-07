@@ -22,9 +22,7 @@ export default withAuth(
         from += req.nextUrl.search;
       }
 
-      return NextResponse.redirect(
-        new URL(`/?from=${encodeURIComponent(from)}`, req.url)
-      );
+      return NextResponse.redirect(new URL(`/?from=${encodeURIComponent(from)}`, req.url));
     }
   },
   {

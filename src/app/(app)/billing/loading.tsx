@@ -27,12 +27,7 @@ export default async function BillingLoading() {
             </div>
           </div>
           {/* Usage details */}
-          <div
-            className={clsx(
-              "flex flex-col gap-9 ",
-              "border-r border-slate-6 pr-12"
-            )}
-          >
+          <div className={clsx("flex flex-col gap-9 ", "border-r border-slate-6 pr-12")}>
             <p className="text-slate-11">Copies generated</p>
             <div className="flex flex-col gap-2">
               <div className="flex flex-row-reverse items-end justify-between">
@@ -66,12 +61,7 @@ export default async function BillingLoading() {
       <div className="mb-40 mt-16">
         <div className="flex w-full items-start gap-16">
           {/* Billing information */}
-          <div
-            className={clsx(
-              "flex items-start gap-16 ",
-              "border-r border-slate-6 pr-16"
-            )}
-          >
+          <div className={clsx("flex items-start gap-16 ", "border-r border-slate-6 pr-16")}>
             <p className="text-slate-11">Billing information</p>
             <div className="flex flex-col gap-8">
               <div className="flex w-full flex-col gap-2">

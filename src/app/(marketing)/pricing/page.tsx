@@ -9,9 +9,8 @@ export const metadata: Metadata = {
   title: "Pricing",
 };
 
-const pricing = await pullPricingTableData();
-
 export default async function PricingPage() {
+  const pricing = await pullPricingTableData();
   return (
     <>
       {/* Hero Copy */}
@@ -20,8 +19,7 @@ export default async function PricingPage() {
           Easy & flexible pricing
         </h1>
         <p className="body-xl w-full px-4 text-center text-slate-11 md:w-[572px] md:px-0">
-          Whatever plan you choose, know that our AI will generate the best
-          marketing copy.
+          Whatever plan you choose, know that our AI will generate the best marketing copy.
         </p>
       </div>
 
@@ -39,16 +37,10 @@ export default async function PricingPage() {
               <div className="flex flex-col gap-2">
                 <h6 className="body-semibold text-slate-12">{plan.name}</h6>
                 <div className="flex items-center gap-3">
-                  <h5 className="text-[32px] font-bold leading-9">
-                    ${plan.base / 100}
-                  </h5>
+                  <h5 className="text-[32px] font-bold leading-9">${plan.base / 100}</h5>
                   <div className="flex flex-col items-start">
-                    <span className="caption">
-                      {plan.currency.toUpperCase()}
-                    </span>
-                    <span className="caption-s text-slate-11">
-                      Billed {plan.interval}
-                    </span>
+                    <span className="caption">{plan.currency.toUpperCase()}</span>
+                    <span className="caption-s text-slate-11">Billed {plan.interval}</span>
                   </div>
                 </div>
               </div>

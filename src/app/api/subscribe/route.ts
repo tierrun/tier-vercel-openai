@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+import type Stripe from "stripe";
 import type { PlanName } from "tier";
 import { z } from "zod";
 
@@ -19,8 +20,13 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const plan = searchParams.get("plan") as PlanName;
 
+    const paymentMethodResponse = await tier.lookupPaymentMethods(`org:${user?.id}`);
+
     try {
-      await tier.subscribe(`org:${user?.id}`, plan);
+      const paymentMethod = paymentMethodResponse.methods[0] as unknown as Stripe.PaymentMethod;
+      await tier.subscribe(`org:${user?.id}`, plan, {
+        paymentMethodID: paymentMethod.id,
+      });
       return NextResponse.redirect(new URL("/generate", req.url));
     } catch (error) {
       console.log(error);

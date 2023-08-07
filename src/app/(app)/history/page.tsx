@@ -48,9 +48,7 @@ export default async function HistoryPage() {
               </div>
               <p className="caption text-slate-11">{`Generated on ${new Date(
                 copy.generatedAt
-              ).toLocaleDateString()} - ${new Date(
-                copy.generatedAt
-              ).toLocaleTimeString()}`}</p>
+              ).toLocaleDateString()} - ${new Date(copy.generatedAt).toLocaleTimeString()}`}</p>
             </div>
           ))
         ) : (

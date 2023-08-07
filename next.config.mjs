@@ -7,7 +7,6 @@ const nextConfig = {
     domains: ["avatars.githubusercontent.com"],
   },
   experimental: {
-    typedRoutes: true,
     serverActions: true,
     serverComponentsExternalPackages: ["@prisma/client"],
   },

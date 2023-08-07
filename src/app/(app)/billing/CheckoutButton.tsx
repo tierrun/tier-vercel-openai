@@ -2,14 +2,20 @@
 
 import { useState } from "react";
 
-import { tier } from "@/lib/tier";
+import type { CurrentPlan, PricingTableData } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Icons } from "@/components/ui/icons";
 import { toast } from "@/components/ui/use-toast";
 
-export function CheckoutButton({ plan, currentPlan }) {
+export function CheckoutButton({
+  plan,
+  currentPlan,
+}: {
+  plan: PricingTableData;
+  currentPlan: CurrentPlan;
+}) {
   const [changePlan, setChangePlan] = useState(false);
-  const subscribe = async (planId) => {
+  const subscribe = async (planId: string) => {
     try {
       setChangePlan(true);
       const response = await fetch(`/api/change-plan?plan=${planId}`, {

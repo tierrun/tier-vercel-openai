@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+
 import { Metadata } from "next";
 
 import { siteConfig } from "@/config/site";
@@ -51,17 +52,9 @@ export const metadata: Metadata = {
   manifest: `${siteConfig.url}/favicons/site.webmanifest`,
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${dm_sans.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${inter.variable} ${dm_sans.variable}`} suppressHydrationWarning>
       <head />
       {/* Body */}
       <body className="bg-slate-1 font-sans text-slate-12">

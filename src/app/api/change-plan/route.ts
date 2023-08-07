@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth/next";
+import type Stripe from "stripe";
 import type { PlanName } from "tier";
 import { z } from "zod";
 
@@ -18,9 +19,9 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const plan = searchParams.get("plan") as PlanName;
 
-    const paymentMethod = await tier.lookupPaymentMethods(`org:${user?.id}`);
+    const paymentMethodResponse = await tier.lookupPaymentMethods(`org:${user?.id}`);
 
-    if (paymentMethod.methods[0] === undefined) {
+    if (paymentMethodResponse.methods[0] === undefined) {
       console.log("set up mode checkout");
       const successUrl = new URL(`/api/subscribe?plan=${plan}`, env.NEXT_PUBLIC_APP_URL).toString();
       const cancelUrl = new URL("/billing", env.NEXT_PUBLIC_APP_URL).toString();
@@ -33,7 +34,10 @@ export async function GET(req: Request) {
     } else {
       console.log("subscribe");
       try {
-        await tier.subscribe(`org:${user?.id}`, plan);
+        const paymentMethod = paymentMethodResponse.methods[0] as unknown as Stripe.PaymentMethod;
+        await tier.subscribe(`org:${user?.id}`, plan, {
+          paymentMethodID: paymentMethod.id,
+        });
       } catch (error) {
         console.log(error);
       }

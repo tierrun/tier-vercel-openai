@@ -29,7 +29,9 @@ export const authOptions: NextAuthOptions = {
 
         // Check if org/user already exists in Stripe, else create and subscribe to free tier
         try {
-          await tier.lookupOrg(`org:${session?.user?.id}`);
+          const c = await tier.lookupOrg(`org:${session?.user?.id}`);
+          console.log("Checking if user/org already exists in Tier");
+          console.log(c);
         } catch (error) {
           // Auto subscribe user to the free plan if they do not have any subscription already.
           // Add OrgInfo to create/update the customer profile while subscribing

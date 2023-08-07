@@ -46,12 +46,7 @@ export function NextJSLogo(props: any) {
       </g>
       <defs>
         <clipPath id="clip0_380_2228">
-          <rect
-            width="78.8571"
-            height="16"
-            fill="white"
-            transform="translate(0.80957)"
-          />
+          <rect width="78.8571" height="16" fill="white" transform="translate(0.80957)" />
         </clipPath>
       </defs>
     </svg>
