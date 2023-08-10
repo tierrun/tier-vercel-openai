@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 import { clsx } from "clsx";
 import type Stripe from "stripe";
+import type { CurrentPhase, LookupOrgResponse, PaymentMethodsResponse, Usage } from "tier";
 
+import { PricingTableData } from "@/types";
 import { TIER_AICOPY_FEATURE_ID } from "@/config/tierConstants";
 import { pullCurrentPlan } from "@/lib/services/currentPlan";
 import { pullPricingTableData } from "@/lib/services/pricingTableData";
@@ -22,28 +24,25 @@ export const metadata: Metadata = {
 };
 
 export default async function BillingPage() {
-  const pricing = await pullPricingTableData();
-
   const user = await getCurrentUser();
 
-  // Fetch the feature consumption and limit of the AI copy feature for the plan currently subscribed
-  const featureLimits = await tier.lookupLimit(`org:${user?.id}`, TIER_AICOPY_FEATURE_ID);
+  let [pricing, featureLimits, phase, org, paymentMethodResponse] = await Promise.all([
+    pullPricingTableData(),
+    // Fetch the feature consumption and limit of the AI copy feature for the plan currently subscribed
+    tier.lookupLimit(`org:${user?.id}`, TIER_AICOPY_FEATURE_ID),
+    // Fetch the phase data of the current subscription
+    tier.lookupPhase(`org:${user?.id}`),
+    // Fetch organization/user details
+    tier.lookupOrg(`org:${user?.id}`),
+    // Fetch the saved payment methods
+    tier.lookupPaymentMethods(`org:${user?.id}`),
+  ]);
 
   const usageLimit = featureLimits.limit;
   const used = featureLimits.used;
 
-  // Fetch the phase data of the current subscription
-  const phase = await tier.lookupPhase(`org:${user?.id}`);
-  console.log(phase.current?.end);
-
   // Fetch the current plan from the pricing table data
   const currentPlan = await pullCurrentPlan(phase, pricing);
-
-  // Fetch organization/user details
-  const org = await tier.lookupOrg(`org:${user?.id}`);
-
-  // Fetch the saved payment methods
-  const paymentMethodResponse = await tier.lookupPaymentMethods(`org:${user?.id}`);
 
   const paymentMethod = paymentMethodResponse.methods[0] as unknown as Stripe.PaymentMethod;
 
