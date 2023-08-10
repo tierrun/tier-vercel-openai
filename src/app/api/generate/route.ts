@@ -38,7 +38,7 @@ const generateCopyStream = async (input: string) => {
   return stream;
 };
 
-export async function POST(req: Request, context: NextFetchEvent) {
+export async function POST(req: Request) {
   try {
     const json = await req.json();
     const body = inputSchema.parse(json);
