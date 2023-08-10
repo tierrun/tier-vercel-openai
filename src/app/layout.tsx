@@ -29,10 +29,13 @@ export const metadata: Metadata = {
     },
   ],
   creator: "tierrun",
+  metadataBase: new URL(siteConfig.url),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteConfig.url,
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
@@ -41,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [`${siteConfig.url}/og.jpg`],
+    images: ["/og.jpg"],
     creator: "@tierrun",
   },
   icons: {
@@ -52,7 +55,7 @@ export const metadata: Metadata = {
   manifest: `${siteConfig.url}/favicons/site.webmanifest`,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${dm_sans.variable}`} suppressHydrationWarning>
       <head />

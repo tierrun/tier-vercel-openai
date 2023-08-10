@@ -5,7 +5,6 @@ import { getCurrentUser } from "@/lib/session";
 import { Button } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "History",

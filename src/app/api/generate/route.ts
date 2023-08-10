@@ -18,7 +18,7 @@ const inputSchema = z.object({
   userId: z.string(),
 });
 
-const generateCopyStream = async (input: string, context: NextFetchEvent) => {
+const generateCopyStream = async (input: string) => {
   const prompt = `You are a marketing expert and a customer approaches you to write a very short and crisp marketing copy for him or her. They want a marketing copy on the topic of \"${input}\".\n\nThis is the short marketing copy you came up with:\n\n`;
 
   const response = await openAI.createCompletion({
@@ -38,7 +38,7 @@ const generateCopyStream = async (input: string, context: NextFetchEvent) => {
   return stream;
 };
 
-export async function POST(req: Request, context: NextFetchEvent) {
+export async function POST(req: Request) {
   try {
     const json = await req.json();
     const body = inputSchema.parse(json);
@@ -46,7 +46,7 @@ export async function POST(req: Request, context: NextFetchEvent) {
     const tierAnswer = await tier.can(`org:${body.userId}`, TIER_AICOPY_FEATURE_ID);
 
     if (tierAnswer.ok) {
-      const stream = await generateCopyStream(body.prompt, context);
+      const stream = await generateCopyStream(body.prompt);
 
       await tierAnswer.report();
 
@@ -55,7 +55,7 @@ export async function POST(req: Request, context: NextFetchEvent) {
       const tierExtraCopyAnswer = await tier.can(`org:${body.userId}`, TIER_EXTRACOPY_FEATURE_ID);
 
       if (tierExtraCopyAnswer.ok) {
-        const stream = await generateCopyStream(body.prompt, context);
+        const stream = await generateCopyStream(body.prompt);
 
         await tierExtraCopyAnswer.report();
 

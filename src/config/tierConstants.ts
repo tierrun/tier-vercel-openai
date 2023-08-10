@@ -3,7 +3,7 @@ import type { FeatureName, PlanName } from "tier";
 import { TierPlanConstant } from "@/types";
 
 // Plans
-export const TIER_FREE_PLAN_ID = "plan:free@0";
+export const TIER_FREE_PLAN_ID = "plan:free@1";
 export const TIER_STARTUP_PLAN_ID = "plan:startup@0";
 export const TIER_BUSINESS_PLAN_ID = "plan:business@0";
 
