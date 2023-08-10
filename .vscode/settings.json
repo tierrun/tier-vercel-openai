@@ -10,9 +10,7 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   // Class Variance Authority
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ],
+  "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
   "workbench.editor.labelFormat": "short",
   // Custom file nesting
   "explorer.fileNesting.enabled": true,
@@ -25,7 +23,9 @@
   },
   // Override spellings in workspace
   "cSpell.words": [
+    "AICOPY",
     "clsx",
+    "EXTRACOPY",
     "formik",
     "headlessui",
     "heroicons",
