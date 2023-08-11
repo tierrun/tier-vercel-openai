@@ -6,6 +6,9 @@ import { BgPattern } from "@/components/ui/Bgpattern";
 import { SignUpButton } from "@/components/marketing/pricing/LandingSignUp";
 import { CheckBoxIcon } from "@/res/icons/CheckBoxIcon";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Pricing",
 };
