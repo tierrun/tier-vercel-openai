@@ -51,14 +51,15 @@ cp .env.example .env.local
 npm run dev
 ```
 
-## Tier Pricing Models
+## Tier Pricing Model
 
-- Prod - https://model.tier.run/clkkv3fv93bbko972m4w3x9o8
-- Staging - https://model.tier.run/clkkurlas3a4qo9725bj1hfr0
-- Dev - https://model.tier.run/edit/cll0j0ya64mrao972ccqueu7i
-- Dev (New Model) - https://model.tier.run/clkk2dgjs30kdo972fptgizyx
+- Model Builder - https://model.tier.run/clkkv3fv93bbko972m4w3x9o8
 
-You can clone the pricing model from the above links and make it your own.
+You can clone the pricing model from the above links and make it your own. You can sync it with your Stripe "Test Mode" for both your dev and staging environments. You can also push this model to prod as shown below, by making use of the Tier CLI using this command where you use the model builder link and set a environment variable called `STRIPE_API_KEY` which should be a restricted key generated will all permissions in your Stripe live mode. You can find restricted keys at `Developers > API Keys > Restricted Keys`
+
+```bash
+tier --live push <https://models.tier.run/XXXXXXXX>
+```
 
 ## Environment variables
 
