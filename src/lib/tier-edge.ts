@@ -1,4 +1,4 @@
-import { Tier } from "tier";
+import { Tier } from "tier/client";
 
 import { env } from "@/env.mjs";
 

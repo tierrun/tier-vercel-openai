@@ -29,7 +29,6 @@ export async function GET(req: Request) {
       const checkout = await tier.checkout(`org:${user?.id}`, successUrl, {
         cancelUrl,
       });
-
       return new Response(JSON.stringify({ url: checkout.url }));
     } else {
       console.log("subscribe");

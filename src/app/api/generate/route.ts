@@ -5,7 +5,7 @@ import { z } from "zod";
 import { env } from "@/env.mjs";
 import { TIER_AICOPY_FEATURE_ID, TIER_EXTRACOPY_FEATURE_ID } from "@/config/tierConstants";
 import { openAI } from "@/lib/ai";
-import { tier } from "@/lib/tier";
+import { tier } from "@/lib/tier-edge";
 
 if (!env.OPENAI_API_KEY) {
   throw new Error("Missing env var from OpenAI");
