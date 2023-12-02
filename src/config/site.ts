@@ -1,5 +1,5 @@
 import { SiteConfig } from "@/types";
-import { env } from "@/env.mjs";
+import { env } from "@/env.js";
 
 export const siteConfig: SiteConfig = {
   name: "Blip",

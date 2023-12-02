@@ -1,6 +1,6 @@
 import { Tier } from "tier";
 
-import { env } from "@/env.mjs";
+import { env } from "@/env.js";
 
 export const tier = new Tier({
   baseURL: env.TIER_BASE_URL as string,

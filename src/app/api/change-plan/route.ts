@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 import type { PlanName } from "tier";
 import { z } from "zod";
 
-import { env } from "@/env.mjs";
+import { env } from "@/env.js";
 import { authOptions } from "@/lib/auth";
 import { tier } from "@/lib/tier";
 
